@@ -33,6 +33,7 @@ public class Processor {
     }
 
     private void groupTaskForParallelExecution(List<List<TaskRequest>> groupedTasks) {
+        /* First group by User, then group by Task Type, then sort by Priority */
         queue.stream().collect(Collectors.groupingBy(TaskRequest::getSubmittedBy))
                         .values().forEach(sameUserTaskRequests -> {
                             sameUserTaskRequests.stream().collect(Collectors.groupingBy(TaskRequest::getType))
@@ -46,6 +47,7 @@ public class Processor {
     }
 
     private static void executeTaskInParallel(List<List<TaskRequest>> groupedTasks, List<TaskResponse> taskResponses) {
+        /* Using Parallel Stream to run each Inner TaskRequest List in Parallel */
         groupedTasks.parallelStream().forEach(taskRequestList -> {
             taskRequestList.forEach(taskRequest -> {
                 Task task = new Task(taskRequest);
